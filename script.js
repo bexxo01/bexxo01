@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeLinkCards();
     initializeParallax();
     initializeCursorEffect();
+    initializeVoidParticles();
 });
 
 // ===========================
@@ -98,13 +99,13 @@ function createRipple(event, element) {
         width: ${size}px;
         height: ${size}px;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+        background: radial-gradient(circle, rgba(204, 51, 51, 0.2) 0%, transparent 70%);
         left: ${x}px;
         top: ${y}px;
         pointer-events: none;
         transform: scale(0);
         opacity: 1;
-        animation: rippleEffect 0.6s ease-out;
+        animation: rippleEffect 1s cubic-bezier(0.4, 0.0, 0.2, 1);
         z-index: 0;
     `;
 
@@ -113,7 +114,7 @@ function createRipple(event, element) {
 
     setTimeout(() => {
         ripple.remove();
-    }, 600);
+    }, 1000);
 }
 
 // Add ripple animation to stylesheet dynamically
@@ -121,7 +122,7 @@ const style = document.createElement('style');
 style.textContent = `
     @keyframes rippleEffect {
         to {
-            transform: scale(2);
+            transform: scale(2.5);
             opacity: 0;
         }
     }
@@ -152,12 +153,16 @@ function applyParallax() {
     const grainOverlay = document.querySelector('.grain-overlay');
 
     if (profileSection) {
-        profileSection.style.transform = `translateY(${scrolled * 0.3}px)`;
-        profileSection.style.opacity = 1 - (scrolled / 500);
+        const translateY = scrolled * 0.2;
+        const opacity = Math.max(0, 1 - (scrolled / 600));
+        profileSection.style.transform = `translateY(${translateY}px)`;
+        profileSection.style.opacity = opacity;
+        profileSection.style.transition = 'transform 0.1s ease-out, opacity 0.1s ease-out';
     }
 
     if (grainOverlay) {
-        grainOverlay.style.transform = `translateY(${scrolled * -0.1}px)`;
+        grainOverlay.style.transform = `translateY(${scrolled * -0.05}px) rotate(${scrolled * 0.02}deg)`;
+        grainOverlay.style.transition = 'transform 0.1s ease-out';
     }
 }
 
@@ -227,33 +232,37 @@ function initializeCursorEffect() {
             border-radius: 50%;
             pointer-events: none;
             z-index: 9999;
-            mix-blend-mode: difference;
-            transition: transform 0.2s ease;
+            mix-blend-mode: screen;
+            transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
         }
 
         .custom-cursor {
-            width: 8px;
-            height: 8px;
-            background: white;
+            width: 6px;
+            height: 6px;
+            background: rgba(204, 51, 51, 0.9);
             transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px rgba(204, 51, 51, 0.6);
         }
 
         .custom-cursor-follower {
             width: 32px;
             height: 32px;
-            border: 2px solid rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(204, 51, 51, 0.4);
             transform: translate(-50%, -50%);
-            transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
+            transition: all 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+            box-shadow: 0 0 20px rgba(204, 51, 51, 0.2);
         }
 
         .custom-cursor.cursor-hover {
             transform: translate(-50%, -50%) scale(0.5);
+            background: rgba(204, 51, 51, 1);
         }
 
         .custom-cursor-follower.cursor-hover {
             width: 64px;
             height: 64px;
-            border-color: rgba(255, 68, 68, 0.8);
+            border-color: rgba(204, 51, 51, 0.8);
+            box-shadow: 0 0 30px rgba(204, 51, 51, 0.4);
         }
 
         body {
@@ -318,6 +327,83 @@ document.documentElement.style.scrollBehavior = 'smooth';
 // CONSOLE EASTER EGG
 // ===========================
 
-console.log('%c🔥 DARK & GRITTY 🔥', 'font-size: 24px; font-weight: bold; color: #ff4444; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);');
-console.log('%cLooking for something?', 'font-size: 14px; color: #a0a0a0;');
-console.log('%cThis site was crafted with precision and passion.', 'font-size: 12px; color: #666;');
+console.log('%c⬛ VOID ⬛', 'font-size: 24px; font-weight: bold; color: #cc3333; text-shadow: 2px 2px 4px rgba(0,0,0,0.9);');
+console.log('%cWelcome to the abyss...', 'font-size: 14px; color: #8a8a8a;');
+console.log('%cCrafted with darkness and precision.', 'font-size: 12px; color: #4a4a4a;');
+
+// ===========================
+// VOID PARTICLES EFFECT
+// ===========================
+
+function initializeVoidParticles() {
+    const particlesContainer = document.createElement('div');
+    particlesContainer.className = 'void-particles';
+    particlesContainer.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+    `;
+    document.body.insertBefore(particlesContainer, document.body.firstChild);
+
+    // Create floating particles
+    const particleCount = 30;
+    for (let i = 0; i < particleCount; i++) {
+        createParticle(particlesContainer);
+    }
+}
+
+function createParticle(container) {
+    const particle = document.createElement('div');
+    const size = Math.random() * 3 + 1;
+    const startX = Math.random() * 100;
+    const startY = Math.random() * 100;
+    const duration = Math.random() * 40 + 40; // 40-80 seconds
+    const delay = Math.random() * 20;
+    const opacity = Math.random() * 0.15 + 0.05;
+
+    particle.style.cssText = `
+        position: absolute;
+        width: ${size}px;
+        height: ${size}px;
+        background: radial-gradient(circle, rgba(204, 51, 51, ${opacity}) 0%, transparent 70%);
+        border-radius: 50%;
+        left: ${startX}%;
+        top: ${startY}%;
+        filter: blur(${Math.random() * 2 + 1}px);
+        animation: float ${duration}s ease-in-out ${delay}s infinite;
+    `;
+
+    container.appendChild(particle);
+}
+
+// Add particle animation
+const particleStyle = document.createElement('style');
+particleStyle.textContent = `
+    @keyframes float {
+        0%, 100% {
+            transform: translate(0, 0) scale(1);
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
+        }
+        90% {
+            opacity: 1;
+        }
+        25% {
+            transform: translate(${Math.random() * 100 - 50}vw, ${Math.random() * 100 - 50}vh) scale(${Math.random() + 0.5});
+        }
+        50% {
+            transform: translate(${Math.random() * 100 - 50}vw, ${Math.random() * 100 - 50}vh) scale(${Math.random() + 1});
+        }
+        75% {
+            transform: translate(${Math.random() * 100 - 50}vw, ${Math.random() * 100 - 50}vh) scale(${Math.random() + 0.7});
+        }
+    }
+`;
+document.head.appendChild(particleStyle);
