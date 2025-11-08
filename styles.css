@@ -9,18 +9,18 @@
 }
 
 :root {
-    /* Dark & Gritty Color Palette */
-    --color-bg: #0a0a0a;
-    --color-bg-secondary: #111111;
-    --color-surface: #1a1a1a;
-    --color-surface-hover: #242424;
-    --color-border: #2a2a2a;
-    --color-text-primary: #ffffff;
-    --color-text-secondary: #a0a0a0;
-    --color-text-muted: #666666;
-    --color-accent: #ff4444;
-    --color-accent-secondary: #ff6b6b;
-    --color-glow: rgba(255, 68, 68, 0.3);
+    /* Void & Ultra Gritty Color Palette */
+    --color-bg: #000000;
+    --color-bg-secondary: #0d0d0d;
+    --color-surface: #151515;
+    --color-surface-hover: #1d1d1d;
+    --color-border: #222222;
+    --color-text-primary: #e8e8e8;
+    --color-text-secondary: #8a8a8a;
+    --color-text-muted: #4a4a4a;
+    --color-accent: #cc3333;
+    --color-accent-secondary: #ff4444;
+    --color-glow: rgba(204, 51, 51, 0.4);
 
     /* Typography */
     --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -33,18 +33,20 @@
     --spacing-lg: 2rem;
     --spacing-xl: 3rem;
 
-    /* Effects */
-    --transition-speed: 0.3s;
-    --transition-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.6);
-    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.8);
-    --shadow-glow: 0 0 20px var(--color-glow);
+    /* Effects - Smooth & Slow */
+    --transition-speed: 0.5s;
+    --transition-smooth: cubic-bezier(0.4, 0.0, 0.2, 1);
+    --transition-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.9);
+    --shadow-md: 0 4px 24px rgba(0, 0, 0, 0.95);
+    --shadow-lg: 0 8px 48px rgba(0, 0, 0, 1);
+    --shadow-glow: 0 0 30px var(--color-glow);
+    --shadow-void: inset 0 0 100px rgba(0, 0, 0, 0.8);
 }
 
 body {
     font-family: var(--font-primary);
-    background: var(--color-bg);
+    background: #000000;
     color: var(--color-text-primary);
     min-height: 100vh;
     line-height: 1.6;
@@ -54,34 +56,55 @@ body {
     position: relative;
 }
 
-/* ===========================
-   GRAIN TEXTURE OVERLAY
-   =========================== */
-
-.grain-overlay {
+body::before {
+    content: '';
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    opacity: 0.03;
-    z-index: 1;
+    background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.7) 70%, #000000 100%);
     pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    animation: grain 8s steps(10) infinite;
+    z-index: 1;
 }
 
-@keyframes grain {
-    0%, 100% { transform: translate(0, 0); }
-    10% { transform: translate(-5%, -10%); }
-    20% { transform: translate(-15%, 5%); }
-    30% { transform: translate(7%, -25%); }
-    40% { transform: translate(-5%, 25%); }
-    50% { transform: translate(-15%, 10%); }
-    60% { transform: translate(15%, 0%); }
-    70% { transform: translate(0%, 15%); }
-    80% { transform: translate(3%, 35%); }
-    90% { transform: translate(-10%, 10%); }
+/* ===========================
+   VOID BACKGROUND LAYERS
+   =========================== */
+
+.grain-overlay {
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 20% 30%, rgba(30, 10, 10, 0.15) 0%, transparent 25%),
+        radial-gradient(circle at 80% 70%, rgba(20, 5, 15, 0.12) 0%, transparent 30%),
+        radial-gradient(circle at 50% 50%, rgba(15, 5, 10, 0.1) 0%, transparent 40%);
+    animation: voidSwirl 60s ease-in-out infinite;
+    filter: blur(60px);
+}
+
+@keyframes voidSwirl {
+    0%, 100% {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+        opacity: 0.6;
+    }
+    25% {
+        transform: translate(-5%, -3%) rotate(90deg) scale(1.1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: translate(3%, 5%) rotate(180deg) scale(1.05);
+        opacity: 0.7;
+    }
+    75% {
+        transform: translate(-3%, 2%) rotate(270deg) scale(1.08);
+        opacity: 0.75;
+    }
 }
 
 /* ===========================
@@ -106,7 +129,7 @@ body {
 .profile-section {
     text-align: center;
     margin-bottom: var(--spacing-xl);
-    animation: fadeInUp 0.8s ease-out;
+    animation: fadeInUp 1.2s var(--transition-smooth);
 }
 
 .avatar-wrapper {
@@ -121,12 +144,12 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 160px;
-    height: 160px;
+    width: 180px;
+    height: 180px;
     background: radial-gradient(circle, var(--color-glow) 0%, transparent 70%);
     border-radius: 50%;
-    animation: pulse 3s ease-in-out infinite;
-    filter: blur(20px);
+    animation: pulse 5s ease-in-out infinite;
+    filter: blur(40px);
 }
 
 .avatar {
@@ -134,26 +157,27 @@ body {
     width: 140px;
     height: 140px;
     background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-bg-secondary) 100%);
-    border: 3px solid var(--color-border);
+    border: 2px solid var(--color-border);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    transition: all var(--transition-speed) ease;
-    box-shadow: var(--shadow-md), inset 0 0 20px rgba(0, 0, 0, 0.5);
+    transition: all var(--transition-speed) var(--transition-smooth);
+    box-shadow: var(--shadow-md), inset 0 0 40px rgba(0, 0, 0, 0.9), var(--shadow-void);
 }
 
 .avatar svg {
     width: 60px;
     height: 60px;
-    opacity: 0.9;
+    opacity: 0.7;
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
 }
 
 .avatar-wrapper:hover .avatar {
     transform: scale(1.05);
     border-color: var(--color-accent);
-    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    box-shadow: var(--shadow-lg), var(--shadow-glow), inset 0 0 40px rgba(0, 0, 0, 0.9);
 }
 
 @keyframes pulse {
@@ -192,10 +216,11 @@ body {
     bottom: -8px;
     left: 0;
     width: 100%;
-    height: 3px;
+    height: 2px;
     background: linear-gradient(90deg, transparent 0%, var(--color-accent) 50%, transparent 100%);
     transform: scaleX(0);
-    animation: expandLine 1s ease-out 0.5s forwards;
+    animation: expandLine 1.5s var(--transition-smooth) 0.8s forwards;
+    box-shadow: 0 0 10px var(--color-glow);
 }
 
 @keyframes expandLine {
@@ -233,14 +258,14 @@ body {
     padding: 1.25rem 1.5rem;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: 8px;
+    border-radius: 4px;
     text-decoration: none;
     color: var(--color-text-primary);
-    transition: all var(--transition-speed) ease;
+    transition: all var(--transition-speed) var(--transition-smooth);
     overflow: hidden;
-    box-shadow: var(--shadow-sm);
-    animation: fadeInUp 0.6s ease-out backwards;
-    animation-delay: calc(var(--delay, 0) * 0.1s);
+    box-shadow: var(--shadow-sm), inset 0 0 30px rgba(0, 0, 0, 0.6);
+    animation: fadeInUp 1s var(--transition-smooth) backwards;
+    animation-delay: calc(var(--delay, 0) * 0.15s);
 }
 
 .link-card:nth-child(1) { --delay: 1; }
@@ -257,8 +282,8 @@ body {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent 0%, var(--color-surface-hover) 50%, transparent 100%);
-    transition: left 0.6s ease;
+    background: linear-gradient(90deg, transparent 0%, rgba(30, 10, 10, 0.3) 50%, transparent 100%);
+    transition: left 1s var(--transition-smooth);
     pointer-events: none;
 }
 
@@ -269,12 +294,13 @@ body {
 .link-card:hover {
     border-color: var(--color-accent);
     transform: translateX(8px);
-    box-shadow: var(--shadow-md), -4px 0 0 var(--color-accent);
+    box-shadow: var(--shadow-md), -3px 0 0 var(--color-accent), inset 0 0 40px rgba(0, 0, 0, 0.8);
     background: var(--color-surface-hover);
 }
 
 .link-card:active {
     transform: translateX(4px) scale(0.98);
+    transition: all 0.1s var(--transition-smooth);
 }
 
 .link-icon {
@@ -286,28 +312,31 @@ body {
     justify-content: center;
     background: var(--color-bg-secondary);
     border: 1px solid var(--color-border);
-    border-radius: 8px;
-    transition: all var(--transition-speed) var(--transition-bounce);
+    border-radius: 4px;
+    transition: all 0.6s var(--transition-smooth);
     position: relative;
     z-index: 1;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7);
 }
 
 .link-icon svg {
     width: 24px;
     height: 24px;
-    transition: all var(--transition-speed) ease;
+    transition: all 0.6s var(--transition-smooth);
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.8));
 }
 
 .link-card:hover .link-icon {
     background: var(--color-accent);
     border-color: var(--color-accent);
     transform: rotate(5deg) scale(1.1);
-    box-shadow: 0 0 20px var(--color-glow);
+    box-shadow: 0 0 30px var(--color-glow), inset 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 .link-card:hover .link-icon svg {
     color: white;
     transform: scale(1.1);
+    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.9));
 }
 
 .link-content {
@@ -323,14 +352,14 @@ body {
     font-size: 1.125rem;
     font-weight: 600;
     letter-spacing: 0.02em;
-    transition: color var(--transition-speed) ease;
+    transition: color 0.6s var(--transition-smooth);
 }
 
 .link-subtitle {
     font-size: 0.875rem;
     color: var(--color-text-muted);
     font-weight: 400;
-    transition: color var(--transition-speed) ease;
+    transition: color 0.6s var(--transition-smooth);
 }
 
 .link-card:hover .link-title {
@@ -345,7 +374,7 @@ body {
     font-size: 1.5rem;
     font-weight: 300;
     color: var(--color-text-muted);
-    transition: all var(--transition-speed) var(--transition-bounce);
+    transition: all 0.6s var(--transition-smooth);
     position: relative;
     z-index: 1;
 }
@@ -406,7 +435,7 @@ body {
     text-align: center;
     padding: var(--spacing-lg) 0;
     margin-top: auto;
-    animation: fadeInUp 0.8s ease-out 0.8s backwards;
+    animation: fadeInUp 1.2s var(--transition-smooth) 1.2s backwards;
 }
 
 .footer-line {
@@ -430,11 +459,13 @@ body {
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(40px) scale(0.98);
+        filter: blur(10px);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
+        filter: blur(0);
     }
 }
 
